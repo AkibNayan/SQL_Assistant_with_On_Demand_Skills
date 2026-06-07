@@ -1,14 +1,16 @@
 from langchain.agents.middleware import AgentMiddleware, ModelRequest, ModelResponse
 from langchain.messages import SystemMessage
 from typing import Callable
-from tools import load_skill, SKILLS
+from tools import load_skill, SKILLS, write_sql_query
+from state import CustomState
 
 
-class SkillMiddleware(AgentMiddleware):
+class SkillMiddleware(AgentMiddleware[CustomState]):
     """Middleware that injects skill descriptions into the system prompt."""
 
     # Register the load_skill tool as a class variable
-    tools = [load_skill]
+    state_schema = CustomState
+    tools = [load_skill, write_sql_query]
 
     def __init__(self):
         """Initialize and generate the skills prompt from SKILLS"""
